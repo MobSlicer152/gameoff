@@ -1,10 +1,4 @@
-﻿using System.Diagnostics;
-
-using static SDL2.SDL;
-using static SDL2.SDL.SDL_WindowFlags;
-using static SDL2.SDL.SDL_EventType;
-using static SDL2.SDL.SDL_WindowEventID;
-using gameoff;
+﻿using static SDL2.SDL;
 
 namespace GameOff
 {

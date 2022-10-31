@@ -1,5 +1,4 @@
-﻿using gameoff;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace GameOff
 {
@@ -9,8 +8,8 @@ namespace GameOff
 
         static void Main(string[] argv)
         {
-            ConsoleTraceListener consoleTracer = new ConsoleTraceListener();
-            TextWriterTraceListener fileTracer = new TextWriterTraceListener(File.OpenWrite(LOG_NAME));
+            var consoleTracer = new ConsoleTraceListener();
+            var fileTracer = new TextWriterTraceListener(File.OpenWrite(LOG_NAME));
 
             Trace.Listeners.Add(consoleTracer);
             Trace.Listeners.Add(fileTracer);

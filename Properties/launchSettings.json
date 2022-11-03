@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GameOff": {
+      "commandName": "Project",
+      "workingDirectory": "$(SolutionDir)"
+    }
+  }
+}

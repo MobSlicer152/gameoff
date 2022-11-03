@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GameOff
 {
@@ -19,7 +14,11 @@ namespace GameOff
             try
             {
                 MethodBase info = new StackTrace().GetFrame(1).GetMethod();
-                debugOnly = $"{info.ReflectedType.FullName}.{info.Name}/";
+                string className = info.ReflectedType.Name;
+                debugOnly = $"{info.ReflectedType.FullName}." +
+                            $"{info.Name.Replace(".ctor", className).
+                                Replace(".cctor", className).
+                                Replace("Finalize", "~" + className)}/";
             }
             catch (Exception) { }
 #endif

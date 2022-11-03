@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Threading;
+using System.Diagnostics;
 
 namespace GameOff
 {
@@ -16,12 +17,7 @@ namespace GameOff
 
             Thread.CurrentThread.Name = "Main";
 
-            Util.Log("Initializing game");
-
-            SDLManager.Init();
-            SDLManager.Shutdown();
-
-            Util.Log("Exiting");
+            Game.Instance.Run();
 
             Trace.Close();
         }

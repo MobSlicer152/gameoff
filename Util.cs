@@ -1,6 +1,8 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace GameOff
 {
@@ -23,6 +25,16 @@ namespace GameOff
             catch (Exception) { }
 #endif
             Trace.WriteLine($"[{DateTime.Now}] ({Thread.CurrentThread.Name}/{debugOnly}{sourcePath}:{sourceLine}): {obj}");
+        }
+
+        public static unsafe string? StringFromNative(sbyte* source, int length)
+        {
+            return StringFromNative(source, length, Encoding.ASCII);
+        }
+
+        public static unsafe string? StringFromNative(sbyte* source, int length, Encoding encoding)
+        {
+            return new string(source, 0, length, encoding);
         }
     }
 }

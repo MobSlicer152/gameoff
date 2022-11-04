@@ -1,4 +1,5 @@
-﻿using Silk.NET.Windowing;
+﻿using System.Numerics;
+using Silk.NET.Windowing;
 using Silk.NET.OpenGLES;
 
 namespace GameOff.OpenGL
@@ -11,23 +12,6 @@ namespace GameOff.OpenGL
 
         private GL _gl;
 
-        float[] quadVertices =
-        {
-             0.5f,  0.5f, 0.0f,
-             0.5f, -0.5f, 0.0f,
-            -0.5f, -0.5f, 0.0f,
-            -0.5f,  0.5f, 0.0f
-        };
-        uint[] quadIndices =
-        {
-             0, 1, 3,
-             1, 2, 3
-        };
-        GLBufferObject<float> quadVBO;
-        GLBufferObject<uint> quadEBO;
-        GLVertexArrayObject<float, uint> quadVAO;
-        GLShader shader;
-
         public override WindowOptions APIGetWindowOptions()
         {
             WindowOptions options = WindowOptions.Default;
@@ -37,31 +21,28 @@ namespace GameOff.OpenGL
 
         public override void APIInitialize()
         {
+            Util.Log("Initializing OpenGL ES renderer");
+
+            _window.MakeCurrent();
             _gl = GL.GetApi(_window);
             _gl.Enable(GLEnum.DepthTest);
             _gl.DepthFunc(GLEnum.Less);
-            Util.Log($"{_gl.GetStringS(GLEnum.Vendor)} OpenGL {_gl.GetStringS(GLEnum.Version)}");
-            Util.Log($"Render device is {_gl.GetStringS(GLEnum.Renderer)}");
-            quadVBO = new GLBufferObject<float>(_gl, quadVertices, BufferTargetARB.ArrayBuffer);
-            quadEBO = new GLBufferObject<uint>(_gl, quadIndices, BufferTargetARB.ArrayBuffer);
-            quadVAO = new GLVertexArrayObject<float, uint>(_gl, quadVBO, quadEBO);
-            shader = new GLShader(_gl, "shader.vert", "shader.frag");
 
-            quadVAO.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, 7, 0);
-            quadVAO.VertexAttribPointer(1, 4, VertexAttribPointerType.Float, 7, 3);
+#if DEBUG
+            GLDebug.Register(_gl);
+#endif
+
+            Util.Log($"{_gl.GetStringS(GLEnum.Vendor)} {_gl.GetStringS(GLEnum.Version)}");
+            Util.Log($"Render device is {_gl.GetStringS(GLEnum.Renderer)}");
+
+            Util.Log("Renderer initialization succeeded");
         }
 
         public override void APIBeginFrame()
         {
-            _window.MakeCurrent();
+            _gl.Viewport(0, 0, (uint)_window.Size.X, (uint)_window.Size.Y);
             _gl.ClearColor(0, 0, 0, 0);
             _gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
-            quadVAO.Bind();
-            unsafe
-            {
-                _gl.DrawElements(PrimitiveType.Triangles, (uint)quadIndices.Length, DrawElementsType.UnsignedInt, null);
-            }
         }
 
         public override void APIEndFrame()
@@ -71,10 +52,7 @@ namespace GameOff.OpenGL
 
         public override void APIShutdown()
         {
-            quadVBO.Dispose();
-            quadEBO.Dispose();
-            quadVAO.Dispose();
-            shader.Dispose();
+            Util.Log("Shutting down OpenGL ES renderer");
         }
     }
 }

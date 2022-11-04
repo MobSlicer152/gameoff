@@ -26,6 +26,8 @@ namespace GameOff.OpenGL
 
             _gl.DetachShader(_handle, frag);
             _gl.DetachShader(_handle, vert);
+            _gl.DeleteShader(vert);
+            _gl.DeleteShader(frag);
 
         }
 
@@ -43,8 +45,11 @@ namespace GameOff.OpenGL
         {
             uint shader = _gl.CreateShader(shaderType);
             int status = 0;
+            string source;
 
-            _gl.ShaderSource(shader, path);
+            source = File.ReadAllText(path);
+
+            _gl.ShaderSource(shader, source);
             _gl.CompileShader(shader);
 
             _gl.GetShader(shader, GLEnum.CompileStatus, out status);
@@ -56,6 +61,11 @@ namespace GameOff.OpenGL
             }
 
             return shader;
+        }
+
+        public int GetUniform(string name)
+        {
+            return _gl.GetUniformLocation(_handle, name);
         }
     }
 }

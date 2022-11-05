@@ -8,16 +8,25 @@ namespace GameOff.OpenGL
         private GL _gl;
         private uint _handle;
 
-        public GLTexture(GL gl, string path)
+        public GLTexture(GL gl, string path, bool interpolate)
         {
             _gl = gl;
 
             _gl.GenTextures(1, out _handle);
+
             Use();
             _gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
             _gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
-            _gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.LinearMipmapLinear);
-            _gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+            if (interpolate)
+            {
+                _gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.LinearMipmapLinear);
+                _gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+            }
+            else
+            {
+                _gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.NearestMipmapNearest);
+                _gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
+            }
 
             Image = new MagickImage();
             try
@@ -36,8 +45,10 @@ namespace GameOff.OpenGL
         public unsafe override void Update()
         {
             Image.TransformColorSpace(ColorProfile.SRGB);
+            Image.Flip();
+            Span<byte> raw = new Span<byte>(Image.GetPixels().ToByteArray(PixelMapping.RGBA));
             Use();
-            _gl.TexImage2D<ushort>(TextureTarget.Texture2D, 0, (int)GLEnum.Srgb, (uint)Image.Width, (uint)Image.Height, 0, GLEnum.Srgb, GLEnum.UnsignedShort, Image.GetPixels().GetValues());
+            _gl.TexImage2D<byte>(TextureTarget.Texture2D, 0, InternalFormat.Rgba, (uint)Image.Width, (uint)Image.Height, 0, GLEnum.Rgba, GLEnum.UnsignedByte, raw);
             _gl.GenerateMipmap(TextureTarget.Texture2D);
         }
 

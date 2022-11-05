@@ -30,7 +30,7 @@ namespace GameOff
         /// </summary>
         public abstract void Shutdown();
 
-        public abstract Texture CreateTexture(string path);
+        public abstract Texture CreateTexture(string path, bool interpolate);
         public abstract Shader CreateShader(string vertexPath, string fragmentPath);
         public abstract Material CreateMaterial(Texture texture, Shader shader);
         public abstract Model CreateModel(float[] vertices, uint[] indices, VertexFormat format, Material material);

@@ -34,8 +34,15 @@ namespace GameOff.OpenGL
             }
             else if (format == VertexFormat.PositionUV)
             {
-                _vao.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, 6, 0);
-                _vao.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, 6, 3);
+                _vao.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, 5, 0);
+                _vao.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, 5, 3);
+                _textured = true;
+            }
+            else if (format == VertexFormat.PositionColourUV)
+            {
+                _vao.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, 9, 0);
+                _vao.VertexAttribPointer(1, 4, VertexAttribPointerType.Float, 9, 3);
+                _vao.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, 9, 7);
                 _textured = true;
             }
         }
@@ -55,6 +62,8 @@ namespace GameOff.OpenGL
 
         public override void DrawWireframe(float lineThickness)
         {
+            if (_textured)
+                _material.Texture.Use();
             _material.Shader.Use();
             _vao.Bind();
             _gl.LineWidth(lineThickness);

@@ -6,6 +6,13 @@ namespace GameOff
     {
         public MagickImage Image;
         private static MagickImage? _default;
+        private static readonly byte[] _defaultBytes =
+        {
+            0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF,
+            0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF
+        };
 
         public abstract void Update();
         public abstract void Use();
@@ -15,12 +22,12 @@ namespace GameOff
         {
             if (_default == null)
             {
-                MagickImage magenta = new MagickImage(new MagickColor(255, 0, 255), 32, 32);
-                MagickGeometry geometry = new MagickGeometry(32, 32);
-                _default = new MagickImage(new MagickColor(0, 0, 0), 64, 64);
-                _default.CopyPixels(magenta, geometry, 0, 0);
-                _default.CopyPixels(magenta, geometry, 32, 32);
-                magenta.Dispose();
+                MagickReadSettings settings = new MagickReadSettings();
+                settings.Width = 2;
+                settings.Height = 2;
+                settings.Format = MagickFormat.Rgba;
+                _default = new MagickImage(_defaultBytes, settings);
+                _default.Scale(64, 64);
             }
 
             return _default;

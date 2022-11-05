@@ -9,6 +9,7 @@ namespace GameOff
     public enum VertexFormat
     {
         PositionColour,
-        PositionUV
+        PositionUV,
+        PositionColourUV
     }
 }

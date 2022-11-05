@@ -37,7 +37,7 @@ namespace GameOff.OpenGL
             Util.Log($"{_gl.GetStringS(GLEnum.Vendor)} {_gl.GetStringS(GLEnum.Version)}");
             Util.Log($"Render device is {_gl.GetStringS(GLEnum.Renderer)}");
 
-            _defaultShader = new GLShader(_gl, "default.vert", "default.frag");
+            _defaultShader = new GLShader(_gl, "OpenGL/Shaders/colour.vert", "OpenGL/Shaders/colour.frag");
 
             Util.Log("Renderer initialization succeeded");
         }
@@ -59,9 +59,9 @@ namespace GameOff.OpenGL
             Util.Log("Shutting down OpenGL ES renderer");
         }
 
-        public override Texture APICreateTexture(string path)
+        public override Texture APICreateTexture(string path, bool interpolate)
         {
-            return new GLTexture(_gl, path);
+            return new GLTexture(_gl, path, interpolate);
         }
 
         public override Shader APICreateShader(string vertexPath, string fragmentPath)

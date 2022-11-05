@@ -15,7 +15,7 @@ namespace GameOff
         public abstract void APIBeginFrame();
         public abstract void APIEndFrame();
         public abstract void APIShutdown();
-        public abstract Texture APICreateTexture(string path);
+        public abstract Texture APICreateTexture(string path, bool interpolate);
         public abstract Shader APICreateShader(string vertexPath, string fragmentPath);
         public abstract Material APICreateMaterial(Texture texture, Shader shader);
         public abstract Model APICreateModel(float[] vertices, uint[] indices, VertexFormat format, Material data);
@@ -54,9 +54,9 @@ namespace GameOff
             _window.Close();
         }
 
-        public override Texture CreateTexture(string path)
+        public override Texture CreateTexture(string path, bool interpolate)
         {
-            return APICreateTexture(path);
+            return APICreateTexture(path, interpolate);
         }
 
         public override Shader CreateShader(string vertexPath, string fragmentPath)

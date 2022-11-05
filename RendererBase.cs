@@ -3,7 +3,7 @@ using Silk.NET.Maths;
 
 namespace GameOff
 {
-    public abstract class RendererBase : IRenderer
+    public abstract class RendererBase : Renderer
     {
 
         protected IWindow _window;
@@ -15,8 +15,12 @@ namespace GameOff
         public abstract void APIBeginFrame();
         public abstract void APIEndFrame();
         public abstract void APIShutdown();
+        public abstract Texture APICreateTexture(string path);
+        public abstract Shader APICreateShader(string vertexPath, string fragmentPath);
+        public abstract Material APICreateMaterial(Texture texture, Shader shader);
+        public abstract Model APICreateModel(float[] vertices, uint[] indices, VertexFormat format, Material data);
 
-        public void Initialize()
+        public override void Initialize()
         {
             WindowOptions options = APIGetWindowOptions();
             options.Title = Game.NAME;
@@ -30,7 +34,7 @@ namespace GameOff
             APIInitialize();
         }
 
-        public bool BeginFrame()
+        public override bool BeginFrame()
         {
             _window.DoEvents();
 
@@ -39,15 +43,35 @@ namespace GameOff
             return !_window.IsClosing;
         }
 
-        public void EndFrame()
+        public override void EndFrame()
         {
             APIEndFrame();
         }
 
-        public void Shutdown()
+        public override void Shutdown()
         {
             APIShutdown();
             _window.Close();
+        }
+
+        public override Texture CreateTexture(string path)
+        {
+            return APICreateTexture(path);
+        }
+
+        public override Shader CreateShader(string vertexPath, string fragmentPath)
+        {
+            return APICreateShader(vertexPath, fragmentPath);
+        }
+
+        public override Material CreateMaterial(Texture texture, Shader shader)
+        {
+            return APICreateMaterial(texture, shader);
+        }
+
+        public override Model CreateModel(float[] vertices, uint[] indices, VertexFormat format, Material material)
+        {
+            return APICreateModel(vertices, indices, format, material);
         }
 
         protected void OnResize(Vector2D<int> newSize)

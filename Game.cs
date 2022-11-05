@@ -16,15 +16,35 @@ namespace GameOff
 
         public bool Running;
 
-        private IRenderer _renderer;
+        private Renderer _renderer;
 
         public void Run()
         {
+            Model model;
+            Material material;
+
+            float[] vertices =
+            {
+                -0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+                 0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+                 0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+                -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f
+            };
+
+            uint[] indices =
+            {
+                0, 1, 3,
+                1, 2, 3
+            };
+
             Util.Log("Initializing game");
 
             // TODO: hardcoding L bad
             _renderer = GLRenderer.Instance;
             _renderer.Initialize();
+
+            material = _renderer.CreateMaterial(_renderer.CreateTexture(""), _renderer.CreateShader("default.vert", "default.frag"));
+            model = _renderer.CreateModel(vertices, indices, VertexFormat.PositionColour, material);
 
             Util.Log("Entering game loop");
             Running = true;
@@ -33,11 +53,15 @@ namespace GameOff
                 Running = _renderer.BeginFrame();
                 if (!Running)
                     break;
+
+                model.DrawWireframe(0.1f);
+
                 _renderer.EndFrame();
             }
 
             Util.Log("Shutting down game");
 
+            model.Dispose();
             _renderer.Shutdown();
         }
     }

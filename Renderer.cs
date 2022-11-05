@@ -8,7 +8,7 @@ namespace GameOff
         GL
     }
 
-    public interface IRenderer
+    public abstract class Renderer
     {
         /// <summary>
         /// Initialize the render backend
@@ -30,7 +30,12 @@ namespace GameOff
         /// </summary>
         public abstract void Shutdown();
 
-        public static RendererType GetRendererType(IRenderer? renderer)
+        public abstract Texture CreateTexture(string path);
+        public abstract Shader CreateShader(string vertexPath, string fragmentPath);
+        public abstract Material CreateMaterial(Texture texture, Shader shader);
+        public abstract Model CreateModel(float[] vertices, uint[] indices, VertexFormat format, Material material);
+        
+        public static RendererType GetRendererType(Renderer? renderer)
         {
             if (renderer == null)
                 return RendererType.None;

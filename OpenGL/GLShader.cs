@@ -1,12 +1,10 @@
-﻿using Silk.NET.OpenAL;
-using Silk.NET.OpenGLES;
-using System.Reflection.Metadata;
+﻿using Silk.NET.OpenGLES;
 
 namespace GameOff.OpenGL
 {
-    public class GLShader : IDisposable
+    public class GLShader : Shader
     {
-        GL _gl;
+        private GL _gl;
         private uint _handle;
 
         public GLShader(GL gl, string vertexPath, string fragmentPath)
@@ -22,7 +20,9 @@ namespace GameOff.OpenGL
             _gl.LinkProgram(_handle);
             _gl.GetProgram(_handle, GLEnum.LinkStatus, out var status);
             if (status == 0)
-                throw new Exception($"Shader program from {vertexPath} and {fragmentPath} failed to link with status {status}");
+            {
+                throw new Exception($"Shader program from {vertexPath} and {fragmentPath} failed to link:\n{_gl.GetProgramInfoLog(_handle)}");
+            }
 
             _gl.DetachShader(_handle, frag);
             _gl.DetachShader(_handle, vert);
@@ -31,12 +31,12 @@ namespace GameOff.OpenGL
 
         }
 
-        public void Use()
+        public override void Use()
         {
             _gl.UseProgram(_handle);
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             _gl.DeleteProgram(_handle);
         }
